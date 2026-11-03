@@ -214,23 +214,26 @@
                     `;
                 });
 
-                // 拆帳計算
+// 拆帳計算
                 let teacherPay = 0;
                 let payDisplay = "尚未核銷結算";
                 
-                if (verifiedCount >= 2) {
-                    if (verifiedCount === 2) {
-                        teacherPay = 800; // 2人上課固定抽800元[cite: 1]
+                // 改為 1人(含)以上即視為開班並進入結算
+                if (verifiedCount >= 1) {
+                    if (verifiedCount === 1) {
+                        // ⚠️ 這裡請填寫1人上課時老師的收益 (例如固定 400，或用 totalClassRevenue 乘上比例)
+                        teacherPay = 750; 
+                    } else if (verifiedCount === 2) {
+                        teacherPay = 800; // 2人上課固定抽800元
                     } else if (verifiedCount === 3) {
-                        teacherPay = Math.round(totalClassRevenue * 0.55); // 3人上課老師收益55%[cite: 1]
+                        teacherPay = Math.round(totalClassRevenue * 0.55); // 3人上課老師收益55%
                     } else if (verifiedCount >= 4) {
-                        teacherPay = Math.round(totalClassRevenue * 0.60); // 4人滿班老師收益60%[cite: 1]
+                        teacherPay = Math.round(totalClassRevenue * 0.60); // 4人滿班老師收益60%
                     }
                     payDisplay = `+ ${teacherPay.toLocaleString()}`;
                     currentMonthSalary += teacherPay; 
-                } else if (verifiedCount === 1) {
-                    payDisplay = "(人數不足未開班)";
                 }
+                // 原本的 else if (verifiedCount === 1) 段落已完全移除
 
                 const [hr, min] = time.split(':').map(Number);
                 const endDate = new Date(0,0,0, hr, min + 55);
@@ -247,7 +250,7 @@
                                 <div class="class-stats">預約: ${students.length} 人 ｜ 管理員已核銷: <span class="checkin-counter">${verifiedCount}</span> 人</div>
                             </div>
                         </div>
-                        <div class="class-salary" style="color: ${verifiedCount >= 2 ? 'var(--text-main)' : '#999'}">${payDisplay}</div>
+                        <div class="class-salary" style="color: ${verifiedCount >= 1 ? 'var(--text-main)' : '#999'}">${payDisplay}</div>
                     </div>
                     <div class="student-list">
                         ${studentsHtml}
